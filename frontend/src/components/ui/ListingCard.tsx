@@ -1,7 +1,7 @@
 import { Button, Card, Image, Text } from "@chakra-ui/react"
-import {item} from "../../types/interfaces";
+import {Item} from "../../types/interfaces";
 
-const ListingCard = (props: item) => {
+const ListingCard = (props: Item) => {
   return (
     <Card.Root maxW="sm" overflow="hidden">
       <Image

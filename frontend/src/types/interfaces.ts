@@ -1,4 +1,4 @@
-export interface ticket{
+export interface Ticket{
     ticket_id: number,
     fulfiller_id: number|null,
     item_id: number,
@@ -6,7 +6,7 @@ export interface ticket{
     buyer_id: number,
 }
 
-export interface item{
+export interface Item{
     item_id: number,
     item_name: string,
     src_country: string,
@@ -16,3 +16,17 @@ export interface item{
     timestamp: Date,
     image_link: string,
 }
+
+export interface User {
+    user_id: number;
+    address: string;
+  }
+
+  export interface SharedProps {
+    items: Item[];
+    setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+    tickets: Ticket[];
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
+    users: User[];
+    setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  }
