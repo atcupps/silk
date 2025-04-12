@@ -19,9 +19,6 @@ const Browse = (props: SharedProps) =>{
   const openTickets: Ticket[] = props.tickets;
 
   const itemsList: Item[] = props.items;
-
-  console.log(openTickets)
-  console.log(itemsList)
   
   //hardcoded for now, allow user to choose with filter later
   const startDate = new Date("2025-03-20")
