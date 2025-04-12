@@ -40,7 +40,7 @@ const Browse = (props: SharedProps) =>{
 
 
 async function testSupabaseConnection() {
-    const { data, error } = await supabase.from('users').insert([{ address: '456 Cypress Rd, Austin, TX' }]);
+    const { data, error } = await supabase.from('users').insert([{ user_id: 12, address: '456 Cypress Rd, Austin, TX' }]).select();
     if (error) {
       console.error('Error inserting data:', error);
     } else {

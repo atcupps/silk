@@ -76,9 +76,6 @@ function App() {
   }
 
 useEffect(() => {
-  fetchItems();
-  fetchUsers();
-  fetchTickets();
   const itemSub = supabase
     .channel('items-watch')
     .on('postgres_changes', {
@@ -114,6 +111,10 @@ useEffect(() => {
       fetchTickets();
     })
     .subscribe();
+
+    fetchItems();
+    fetchUsers();
+    fetchTickets();
 
   return () => {
     supabase.removeChannel(itemSub);
