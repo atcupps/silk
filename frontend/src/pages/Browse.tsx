@@ -3,8 +3,11 @@ import ListingCard from '../components/ui/ListingCard';
 import { colors } from "../assets/colors";
 import {Ticket, Item, User, SharedProps} from "../types/interfaces";
 import { supabase } from "../App.tsx";
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const Browse = (props: SharedProps) =>{
       /* grab the list of ticket items and filter by country, and if they are 
@@ -52,33 +55,49 @@ const Browse = (props: SharedProps) =>{
   console.log(relevantTicketItemIds)
 
     return (
-        <>
+        <Box display="flex" flexDirection="column">
             <Navbar />
-            <h1>Browse</h1>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-            {filteredItems.map((item) => (
-                <ListingCard key={item.item_id} item={item} tickets={props.tickets} setTickets={props.setTickets} />
-            ))}
-            </div>
+            <Box display="flex" flexDirection="row" justifyContent="space-between" mb={4}>
+                <h1>Browse</h1>
+                <Box display="flex" gap={2} alignItems="center">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateTimePicker
+                            label="Arrival"
+                            views={['year', 'month', 'day']}
+                            sx={{ maxWidth: 150 }}
+                        />
+                        <DateTimePicker
+                            label="Departure"
+                            views={['year', 'month', 'day']}
+                            sx={{ maxWidth: 150 }}
+                        />
+                    </LocalizationProvider>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1rem' }}>
-            <FormControl sx={{ minWidth: 200 }}>
-              <InputLabel id="country-select-label">Country</InputLabel>
-              <Select
-                labelId="country-select-label"
-                value={country}
-                label="Country"
-                onChange={handleCountryChange}
-              >
-                {uniqueCountries.map(countryName => (
-                  <MenuItem key={countryName} value={countryName}>
-                    {countryName}
-                  </MenuItem>
+                    <FormControl sx={{ maxWidth: 150 }}>
+                        <InputLabel id="country-select-label">Country</InputLabel>
+                        <Select
+                            labelId="country-select-label"
+                            value={country}
+                            label="Country"
+                            onChange={handleCountryChange}
+                        >
+                            {uniqueCountries.map(countryName => (
+                                <MenuItem key={countryName} value={countryName}>
+                                    {countryName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Box>
+
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                {filteredItems.map((item) => (
+                    <ListingCard key={item.item_id} item={item} tickets={props.tickets} setTickets={props.setTickets} />
                 ))}
-              </Select>
-            </FormControl>
-          </div>
-        </>
+                </div>
+        </Box>
     );
 }
 export default Browse;
