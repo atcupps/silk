@@ -1,0 +1,30 @@
+.popup {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    font-family: sans-serif;
+}
+  
+.popup h2 {
+margin: 0 0 12px;
+}
+
+.popup input {
+display: block;
+width: 100%;
+margin-bottom: 10px;
+margin-right: 10px;
+padding: 8px;
+border-radius: 6px;
+border: 1px solid #ccc;
+}
+
+.popup button {
+padding: 10px 16px;
+border: none;
+background: #007bff;
+color: white;
+border-radius: 6px;
+cursor: pointer;
+}
