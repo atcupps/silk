@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import Browse from './pages/Browse'
 import Fufillments from './pages/Fufillments'
-import Listing from './pages/Listing'
 import Wishlist from './pages/Wishlist'
 import Create from './pages/Create'
 import { createClient } from '@supabase/supabase-js';
@@ -130,7 +129,7 @@ console.log(items)
     <Routes>
       <Route path="/Browse" element={<Navigate to="/" />} />
       <Route path="/" element={<Browse items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers} />} />
-      <Route path="/fufillments" element={<Fufillments items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers}/>} />
+      <Route path="/fufillments" element={<Fufillments />} />
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/create" element={<Create />} />
     </Routes>

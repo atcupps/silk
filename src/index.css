@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #F1F0EF;
+  background-color: "#F1F0EF";
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -44,7 +44,6 @@ button {
   font-family: inherit;
   background-color:"#F1F0EF";
   cursor: pointer;
-  transition: border-color 0.25s;
 }
 
 @media (prefers-color-scheme: light) {
