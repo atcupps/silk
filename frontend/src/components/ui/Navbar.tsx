@@ -1,6 +1,9 @@
 import { Flex, Box, Button } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { colors } from "../../assets/colors";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Tooltip } from '@mui/material';
 
 export const Navbar = () => {
     return (
@@ -25,10 +28,19 @@ export const Navbar = () => {
             </Box>
 
             {/* Buttons */}
-            <Box>
+            <Box display="flex" flexDirection="row" alignItems="center" gap={4}>
+            <Tooltip title="Find Items">
+            <Link to="/Browse" style={{ color: 'inherit' }}>
+                <TravelExploreIcon />
+                </Link>
+                </Tooltip>
+                <Tooltip title="My Fulfillments">
+                    <Link to="/Fulfillments" style={{ color: 'inherit' }}>
+                        <LocalShippingIcon />
+                    </Link>
+                </Tooltip>
                 <Button
                     variant="outline"
-                    mr={4}
                     _hover={{ bg: colors.red2, color: 'white', boxShadow: 'none' }}
                     colorPalette={colors.red2}
                     transition="background-color 0.4s ease, color 0.4s ease"
