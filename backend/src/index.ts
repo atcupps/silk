@@ -29,7 +29,7 @@ app.get('/api/screenshot', async (req: Request, res: Response) => {
         const country_code: string = alternateLink.country_code;
         const link: string = alternateLink.link;
 
-        const price: Number = fetchLowestPriceUSD(link);
+        const price: Number = fetchPriceUSD(link);
         if (price < lowestPriceValue) {
             lowestPriceCountry = country_code;
             lowestPriceValue = price;
@@ -87,7 +87,7 @@ Do not include markdown formatting, additional explanations, or comments. Your o
     return jsonData;
 }
 
-function fetchLowestPriceUSD(link: string): Number {
+function fetchPriceUSD(link: string): Number {
     // Robert do ur code here
     return 0;
 }
