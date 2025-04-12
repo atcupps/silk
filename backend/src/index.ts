@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import {GoogleGenAI} from '@google/genai';
 import { Link } from './types/interfaces';
 import dotenv from 'dotenv';
+import puppeteer from 'puppeteer';
 
 dotenv.config();
 
@@ -25,11 +26,11 @@ app.get('/api/screenshot', async (req: Request, res: Response) => {
 
     let lowestPriceCountry: string = "USA";
     let lowestPriceValue: Number = Number.MAX_VALUE; // USD
-    alternateLinks.forEach((alternateLink) => {
+    alternateLinks.forEach(async (alternateLink) => {
         const country_code: string = alternateLink.country_code;
         const link: string = alternateLink.link;
 
-        const price: Number = fetchPriceUSD(link);
+        const price: Number = await fetchPriceUSD(link);
         if (price < lowestPriceValue) {
             lowestPriceCountry = country_code;
             lowestPriceValue = price;
@@ -87,7 +88,20 @@ Do not include markdown formatting, additional explanations, or comments. Your o
     return jsonData;
 }
 
-function fetchPriceUSD(link: string): Number {
+async function fetchPriceUSD(link: string): Promise<Number> {
     // Robert do ur code here
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const outputPath = './backend/screenshots/page.png';
+
+    // Navigate to the URL
+    await page.goto(link, { waitUntil: 'networkidle2' });
+  
+    // Take a screenshot and save to the specified path
+    await page.screenshot({ path: outputPath, fullPage: false });
+  
+    // Close the browser
+    await browser.close();
+
     return 0;
 }
