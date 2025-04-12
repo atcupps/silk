@@ -14,6 +14,7 @@ interface Item {
   item_name: string;
   src_country: string;
   link: string;
+  image_link: string,
   price_us: number;
   price_src: number;
   timestamp: number;
@@ -37,7 +38,7 @@ export default function App() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
-  const [itemForm, setItemForm] = useState({ item_name: '', src_country: '', link: '', price_us: '', price_src: '' });
+  const [itemForm, setItemForm] = useState({ item_name: '', src_country: '', link: '', image_link: '', price_us: '', price_src: '' });
   const [userForm, setUserForm] = useState({ address: '' });
   const [ticketForm, setTicketForm] = useState({ fulfiller_id: '', item_id: '', need_by: '', buyer_id: '' });
 
@@ -71,7 +72,7 @@ export default function App() {
         timestamp: Date.now()
       }
     ]);
-    setItemForm({ item_name: '', src_country: '', link: '', price_us: '', price_src: '' });
+    setItemForm({ item_name: '', src_country: '', link: '', image_link: '', price_us: '', price_src: '' });
     fetchItems();
   }
 
@@ -113,7 +114,10 @@ export default function App() {
         <button onClick={addItem}>Add</button>
         <ul>
           {items.map(i => (
-            <li key={i.item_id}>{i.item_name} <button onClick={() => deleteRow('items', 'item_id', i.item_id)}>Delete</button></li>
+            <li key={i.item_id}>
+              {i.item_name} <button onClick={() => deleteRow('items', 'item_id', i.item_id)}>Delete</button>
+              {i.image_link && <img src={i.image_link} alt={i.item_name} className="w-32 mt-2" />}
+            </li>
           ))}
         </ul>
       </section>
