@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "target": "ES2016", // Or newer
+    "module": "CommonJS",
+    "outDir": "./dist", // Or your preferred output directory
+    "rootDir": "./src", // Or your preferred source directory
     "strict": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true, // Important for compatibility with CommonJS modules like Express
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    // Ensure "moduleResolution" is typically "node" (usually default)
+    "moduleResolution": "node"
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"], // Adjust if your source code is elsewhere
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
