@@ -17,7 +17,7 @@ interface Item {
   image_link: string,
   price_us: number;
   price_src: number;
-  timestamp: number;
+  timestamp: string;
 }
 
 interface User {
@@ -69,7 +69,7 @@ export default function App() {
         ...itemForm,
         price_us: parseFloat(itemForm.price_us),
         price_src: parseFloat(itemForm.price_src),
-        timestamp: Date.now()
+        timestamp: new Date().toISOString().split("T")[0] // YYYY-MM-DD
       }
     ]);
     setItemForm({ item_name: '', src_country: '', link: '', image_link: '', price_us: '', price_src: '' });
