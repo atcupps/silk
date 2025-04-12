@@ -46,7 +46,7 @@ const Browse = (props: SharedProps) =>{
             <h1>Browse</h1>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
             {filteredItems.map((item) => (
-                <ListingCard key={item.item_id} {...item} />
+                <ListingCard key={item.item_id} item={item} tickets={props.tickets} setTickets={props.setTickets} />
             ))}
             </div>
         </>
