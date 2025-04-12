@@ -24,7 +24,7 @@ const ListingCard = (props: {item:Item,
         )?.need_by || '').toLocaleDateString()}
       </Text>
       </Card.Body>
-      <Card.Footer gap="2" bg={colors.red2} border="none" p="0">
+      <Card.Footer gap="2" bg={colors.red2} border="none">
       <Button
         variant="solid"
         onClick={async () => {
