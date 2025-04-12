@@ -5,9 +5,11 @@ import {Ticket, Item, User, SharedProps} from "../types/interfaces";
 import { supabase } from "../App.tsx";
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { countryNameToCode } from "../assets/CountryNameToCode"
 
 const Browse = (props: SharedProps) =>{
       /* grab the list of ticket items and filter by country, and if they are 
@@ -23,18 +25,19 @@ const Browse = (props: SharedProps) =>{
 
   const itemsList: Item[] = props.items;
   
-  //hardcoded for now, allow user to choose with filter later
-  const startDate = new Date("2025-03-20")
-  const endDate = new Date("2025-05-30")
+
+  const [startDate, setStartDate] = useState<Dayjs | null>(null); 
+  const [endDate, setEndDate] = useState<Dayjs | null>(null); 
+
   
   // get ticket siwth null fulfiller_id and date in range
-  const relevantTicketItemIds = openTickets
+  const relevantTicketItemIds = (startDate!=null  && endDate !=null) ? openTickets
     .filter(ticket => (
       ticket.fulfiller_id === null &&
-      new Date(ticket.need_by) >= startDate &&
-     new Date(ticket.need_by) <= endDate
+      dayjs(ticket.need_by).isAfter(dayjs(startDate)) &&
+      dayjs(ticket.need_by).isBefore(dayjs(endDate))
     ))
-    .map(ticket => ticket.item_id)
+    .map(ticket => ticket.item_id) : openTickets.filter(ticket=>(ticket.fulfiller_id===null)).map(ticket => ticket.item_id);
   
   const relevantItems =  props.tickets
     .filter(ticket => ticket.fulfiller_id === null)
@@ -51,25 +54,43 @@ const Browse = (props: SharedProps) =>{
     itemIdSet.has(item.item_id) &&
     item.src_country === country
   )
+// Sort the filtered items by the need_by date in the tickets list
+const sortedFilteredItems = filteredItems.sort((a, b) => {
+    const ticketA = openTickets.find(ticket => ticket.item_id === a.item_id);
+    const ticketB = openTickets.find(ticket => ticket.item_id === b.item_id);
 
-  console.log(relevantTicketItemIds)
-
+    if (ticketA && ticketB) {
+        return dayjs(ticketA.need_by).diff(dayjs(ticketB.need_by));
+    }
+    return 0;
+});
     return (
-        <Box display="flex" flexDirection="column">
+        <Box  display="block" width="100%">
             <Navbar />
-            <Box display="flex" flexDirection="row" justifyContent="space-between" mb={4}>
-                <h1>Browse</h1>
+            <Box 
+                display="flex" 
+                flexDirection="row" 
+                justifyContent="space-between" 
+                alignItems="center"
+                mb={4}
+                mt={10}
+            >
+                <h1 style={{ color: "#280003" }}>Browse</h1>
                 <Box display="flex" gap={2} alignItems="center">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateTimePicker
                             label="Arrival"
                             views={['year', 'month', 'day']}
                             sx={{ maxWidth: 150 }}
+                            value={startDate}
+                            onChange={(newDate) => setStartDate(newDate)}
                         />
                         <DateTimePicker
                             label="Departure"
                             views={['year', 'month', 'day']}
                             sx={{ maxWidth: 150 }}
+                            value={endDate}
+                            onChange={(newDate) => setEndDate(newDate)}
                         />
                     </LocalizationProvider>
 
@@ -83,7 +104,10 @@ const Browse = (props: SharedProps) =>{
                         >
                             {uniqueCountries.map(countryName => (
                                 <MenuItem key={countryName} value={countryName}>
-                                    {countryName}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        {countryNameToCode[countryName] ? <span className={`fi fi-${countryNameToCode[countryName]}`}></span> : '❓'}
+                                        <span>{countryName}</span>
+                                    </div>
                                 </MenuItem>
                             ))}
                         </Select>
@@ -91,12 +115,13 @@ const Browse = (props: SharedProps) =>{
                 </Box>
             </Box>
 
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-                {filteredItems.map((item) => (
+            <Box sx={{      display: "grid",
+      gridTemplateColumns: "repeat(4, 1fr)",
+      gap: "16px",  }}>
+                {sortedFilteredItems.map((item) => (
                     <ListingCard key={item.item_id} item={item} tickets={props.tickets} setTickets={props.setTickets} />
                 ))}
-                </div>
+                </Box>
         </Box>
     );
 }
