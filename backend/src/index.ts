@@ -23,6 +23,19 @@ app.get('/api/screenshot', async (req: Request, res: Response) => {
     const alternateLinks: Link[] = await generateAlternateLinks(link);
     console.log(alternateLinks);
 
+    let lowestPriceCountry: string = "USA";
+    let lowestPriceValue: Number = Number.MAX_VALUE; // USD
+    alternateLinks.forEach((alternateLink) => {
+        const country_code: string = alternateLink.country_code;
+        const link: string = alternateLink.link;
+
+        const price: Number = fetchLowestPriceUSD(link);
+        if (price < lowestPriceValue) {
+            lowestPriceCountry = country_code;
+            lowestPriceValue = price;
+        }
+    })
+
     res.send(JSON.stringify(alternateLinks));
 });
 
@@ -72,4 +85,9 @@ Do not include markdown formatting, additional explanations, or comments. Your o
     const jsonData = JSON.parse(responseText) as Link[];
     console.log('Successfully received alternate links.');
     return jsonData;
+}
+
+function fetchLowestPriceUSD(link: string): Number {
+    // Robert do ur code here
+    return 0;
 }
