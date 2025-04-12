@@ -6,7 +6,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { countryNameToCode } from "../assets/CountryNameToCode"
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import { Item, SharedProps, Ticket } from "../types/interfaces"
