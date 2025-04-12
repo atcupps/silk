@@ -17,15 +17,15 @@ const Browse = (props: SharedProps) =>{
   
   //hardcoded for now, allow user to choose with filter later
   const startDate = new Date("2025-03-20")
-  const endDate = new Date("2025-04-20")
+  const endDate = new Date("2025-05-30")
   const countryFilter = "China" 
   
   // get ticket siwth null fulfiller_id and date in range
   const relevantTicketItemIds = openTickets
     .filter(ticket => (
       ticket.fulfiller_id === null &&
-      ticket.need_by >= startDate &&
-      ticket.need_by <= endDate
+      new Date(ticket.need_by) >= startDate &&
+     new Date(ticket.need_by) <= endDate
     ))
     .map(ticket => ticket.item_id)
   
@@ -38,20 +38,12 @@ const Browse = (props: SharedProps) =>{
     item.src_country === countryFilter
   )
 
+  console.log(relevantTicketItemIds)
 
-async function testSupabaseConnection() {
-    const { data, error } = await supabase.from('users').insert([{ user_id: 12, address: '456 Cypress Rd, Austin, TX' }]).select();
-    if (error) {
-      console.error('Error inserting data:', error);
-    } else {
-      console.log('Inserted data:', data);
-    }
-  }
     return (
         <>
             <Navbar />
             <h1>Browse</h1>
-            <button onClick={testSupabaseConnection}>Test Supabase Connection</button>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
             {filteredItems.map((item) => (
                 <ListingCard key={item.item_id} {...item} />
