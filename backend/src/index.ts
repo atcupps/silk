@@ -53,7 +53,7 @@ async function generateAlternateLinks(link: string): Promise<Link[]> {
     const prompt = 
 `The following is a link for a US website showing a specific product:` + link +
 `
-Create a JSON array containing exactly 11 elements. The first element should be the provided US link. Then include 10 links to the exact same product on different country versions of this website, each paired with the country's ISO 3166-1 alpha-3 code. 
+Create a JSON array containing exactly 11 elements. The first element should be the provided US link. Then include 10 links to the exact same product on different country versions of this website, each paired with the country's ISO 3166-1 alpha-2 code. 
 
 The output must exactly follow this JSON format:
 
@@ -164,7 +164,7 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
     });
 
     const prompt = 
-    `This is a screenshot for a product on a website for the country with the following ISO 3166-1 alpha-3 code: ` + country + `. Extract the price of the product; you should only find a single price, which should be the price of the main product on the page and not any others. 
+    `This is a screenshot for a product on a website for the country with the following ISO 3166-1 alpha-2 code: ` + country + `. Extract the price of the product; you should only find a single price, which should be the price of the main product on the page and not any others. 
     If you cannot confidently see a price for a main item on the page, just return null for the price.
     Additionally, return the local currency the price is given in as a ISO 4217 code.
     Please respond only in JSON format as shown below. Return only a JSON object. Do not include markdown formatting (like triple backticks), comments, or explanations. Your output should be directly parsable by a JSON parser.
