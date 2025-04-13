@@ -136,7 +136,7 @@ const Fulfillments = (props: {items:Item[],
                           <>
                             {item.item_name} 
                             <span style={{ marginLeft:"10px", color: colors.red1 }}>
-                              ${(item.price_us - item.price_src).toFixed(2)} to be earned
+                              ${((item.price_us - item.price_src)*0.2).toFixed(2)} to be earned
                             </span>
                           </>
                         } 
