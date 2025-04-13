@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, FormControlLabel, Link, Switch, Tooltip } from '@mui/material';
+import { TextField, Button, Box, Typography, FormControlLabel, Switch, Tooltip } from '@mui/material';
 import { colors } from "../assets/colors";
-import { Flex } from '@chakra-ui/react';
+import { Flex, Image} from '@chakra-ui/react';
 import { UserMode } from '../types/interfaces';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -51,10 +52,13 @@ const Signup = () => {
             zIndex={1000} // Ensures it stays above other content
         >
             {/* Logo */}
-            <Box>
-                <Link href="/" style={{ color: colors.red4 }}>
-                TheSilkRoad
-                </Link>
+
+              
+            <Box display="flex" flexDirection="row" alignItems="center">
+                <Box marginRight={2}>
+                        <Image src="SilkLogo.svg" height="40px" />
+                </Box>
+ 
             </Box>
 
 

@@ -1,4 +1,4 @@
-import { Flex, Box, Button } from '@chakra-ui/react';
+import { Flex, Box, Button, Image } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { colors } from "../../assets/colors";
@@ -26,9 +26,13 @@ export const Navbar = (props: { userMode: UserMode, setUserMode: () => void }) =
             marginBottom={0} // Ensures no bottom margin
         >
             {/* Logo */}
-            <Box>
+          
+            <Box display="flex" flexDirection="row" alignItems="center">
+                <Box marginRight={2}>
+                        <Image src="SilkLogo.svg" height="40px" />
+                </Box>
                 <Link to="/" style={{ color: colors.red4 }}>
-                    TheSilkRoad
+                    silk
                 </Link>
             </Box>
 
