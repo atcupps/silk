@@ -86,25 +86,33 @@ Do not include markdown formatting, additional explanations, or comments. Your o
 async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
     console.log("Finding the lowest price.");
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
 
     const hash: string = hashURL(links[0].link);
 
-    // Start all fetchPriceUSD calls concurrently
     const pricePromises = links.map(async (link) => {
-        const price = await fetchPriceUSD(link.link, link.country_code, hash, await browser.newPage());
-        return {
-            country_code: link.country_code,
-            priceUSD: price
-        };
+        try {
+            const price = await fetchPriceUSD(link.link, link.country_code, hash, await browser.newPage());
+            return {
+                country_code: link.country_code,
+                priceUSD: price
+            };
+        } catch (error) {
+            console.error(`Error fetching price for ${link.country_code}:`, error);
+            return {
+                country_code: link.country_code,
+                priceUSD: Number.MAX_VALUE // Use high number so it doesn't get picked
+            };
+        }
     });
 
-    // Wait for all promises to resolve
     const results = await Promise.all(pricePromises);
-
     await browser.close();
 
-    // Find the entry with the lowest price
+    // Find the lowest price among successful results
     const lowest = results.reduce((min, current) => {
         return current.priceUSD < min.priceUSD ? current : min;
     }, { country_code: "USA", priceUSD: Number.MAX_VALUE });
@@ -119,6 +127,7 @@ function hashURL(url: string): string {
   }
 
 async function fetchPriceUSD(link: string, country: string, hash: string, page: Page): Promise<Number> {
+    console.log('Getting price for: ' + country);
     const outputPath = './screenshots/' + hash + '/' + country + '.png';
 
     // Ensure the directory exists
@@ -127,17 +136,14 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
         fs.mkdirSync(dir, { recursive: true });
     }
 
-    // await page.setViewport({
-    //     width: 1920,
-    //     height: 1080
-    // });
+    await page.setRequestInterception(true)
+    page.on('request', (request) => {
+        if (request.resourceType() === 'image') request.abort()
+        else request.continue()
+    });
 
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    // await page.setExtraHTTPHeaders({
-    // 'accept-language': 'en-US,en;q=0.9',
-    // });
-
-    await page.goto(link, { waitUntil: 'networkidle2' });
+    await page.goto(link, { waitUntil: 'domcontentloaded' });
     await page.screenshot({
         path: outputPath,
         fullPage: true
