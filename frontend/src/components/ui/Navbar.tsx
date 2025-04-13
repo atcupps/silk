@@ -1,11 +1,19 @@
 import { Flex, Box, Button } from '@chakra-ui/react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { colors } from "../../assets/colors";
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
-import { Tooltip } from '@mui/material';
+import { FormControlLabel, Switch, Tooltip } from '@mui/material';
 
 export const Navbar = () => {
+
+    const [checked, setChecked] = useState(true);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setChecked(event.target.checked);
+    };
+
     return (
         <Flex
             as="nav"
@@ -39,6 +47,29 @@ export const Navbar = () => {
                         <LocalShippingIcon />
                     </Link>
                 </Tooltip>
+    <FormControlLabel
+        control={
+            <Switch
+                checked={checked}
+                onChange={handleChange}
+                sx={{
+                     '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: "white", // Default color when unswitched
+                    },
+                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: colors.red2,
+                    },
+                    '& .MuiSwitch-switchBase': {
+                        color: "white", // Default color when unswitched
+                    },
+                    '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+                        backgroundColor: "white", // Default background color when unswitched
+                    },
+                }}
+            />
+        }
+        label="Buy"
+    />
                 <Button
                     variant="outline"
                     _hover={{ bg: colors.red2, color: 'white', boxShadow: 'none' }}
