@@ -71,9 +71,7 @@ function createPopup(item_id) {
   const popup = document.createElement('div');
   popup.className = 'popup';
   popup.innerHTML = `
-    <h2>Terrafin found better deals!</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+    <h2>Silk found better deals!</h2>
     <button id="activateBtn">Create a ticket</button>
   `;
   shadowRoot.appendChild(popup);
@@ -103,12 +101,12 @@ setTimeout(() => {
     fetch(`http://localhost:3000/api/screenshot?link=${encodeURIComponent(link)}`)
       .then(res => {
         if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        return res.text(); // or .json() if you expect JSON
+        return res.json();
       })
       .then(data => {
         console.log('GET Response:', data);
         itemId = data.item_id;
-        createPopup(itemId); // 👈 Create the popup after successful response
+        createPopup(itemId); // Create the popup after successful response
       })
       .catch(err => {
         console.error('GET Error:', err);
