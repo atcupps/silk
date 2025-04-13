@@ -12,7 +12,7 @@ const WishlistCard = (props: {item:Item,
     <Image
       objectFit="cover"
       maxW="200px"
-      src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+      src={props.item.image_link}
     />
     <Box>
       <Card.Body bg={colors.green1}>
@@ -20,9 +20,9 @@ const WishlistCard = (props: {item:Item,
         <Card.Description mr="2" pr="4" maxWidth={165} >
           <a 
             href={props.item.link} 
-            target="_blank" 
+             target="_blank" 
+             rel="noreferrer"
             style={{ 
-              wordWrap: "break-word", 
               color: "inherit", 
               textDecoration: "none", 
               transition: "text-decoration 0.2s ease-in-out" 
@@ -30,7 +30,7 @@ const WishlistCard = (props: {item:Item,
             onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
             onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
           >
-            {props.item.link}
+Item Link
           </a>
         </Card.Description>
         <HStack mt="4" wrap="wrap" maxWidth={165}>

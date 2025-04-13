@@ -153,7 +153,7 @@ const Fulfillments = (props: {items:Item[],
                           onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                           onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                         >
-                          {item.link}
+                       Item Link
                         </a>
                         }
                         />

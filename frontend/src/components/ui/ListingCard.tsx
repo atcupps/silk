@@ -10,8 +10,7 @@ const ListingCard = (props: {item:Item,
   return (
     <Card.Root maxW="sm" overflow="hidden" variant="subtle" border="none" shadow="none">
       <Image
-      src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-      alt="Green double couch with wooden legs"
+      src={props.item.image_link}
       />
       <Card.Body gap="2" bg={colors.red2} border="none">
       <Card.Title>{props.item.item_name}</Card.Title>

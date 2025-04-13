@@ -28,7 +28,7 @@ export const Navbar = (props: { userMode: UserMode, setUserMode: () => void }) =
             {/* Logo */}
             <Box>
                 <Link to="/" style={{ color: colors.red4 }}>
-                    tarrifins
+                    TheSilkRoad
                 </Link>
             </Box>
 
@@ -69,7 +69,7 @@ export const Navbar = (props: { userMode: UserMode, setUserMode: () => void }) =
                             }}
                         />
                     }
-                    label={props.userMode == UserMode.Buyer ? "Fulfill" : "Buy"}
+                    label={props.userMode == UserMode.Buyer ? "Buy Mode" : "Fulfill Mode"}
                     labelPlacement={"start"}
                 />
                 <AccountCircleIcon sx={{ color: colors.bg }}/>

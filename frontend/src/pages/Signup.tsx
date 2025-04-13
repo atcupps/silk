@@ -53,7 +53,7 @@ const Signup = () => {
             {/* Logo */}
             <Box>
                 <Link href="/" style={{ color: colors.red4 }}>
-                    tarrifins
+                TheSilkRoad
                 </Link>
             </Box>
 
