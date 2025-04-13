@@ -1,17 +1,19 @@
 import Navbar from '../components/ui/Navbar';
 import ListingCard from '../components/ui/ListingCard';
 import { colors } from "../assets/colors";
-import {Ticket, Item, User, SharedProps} from "../types/interfaces";
+import {Ticket, Item, User, SharedProps, UserMode} from "../types/interfaces";
 import { supabase } from "../App.tsx";
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { countryNameToCode } from "../assets/CountryNameToCode"
 
-const Browse = (props: SharedProps) =>{
+const Browse = (props: {items:Item[],
+    tickets:Ticket[], setTickets:  React.Dispatch<React.SetStateAction<Ticket[]>>, userMode: UserMode, 
+setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void}) =>{
       /* grab the list of ticket items and filter by country, and if they are 
   unfufilled (fufiller id is null) */ 
 
@@ -65,8 +67,8 @@ const sortedFilteredItems = filteredItems.sort((a, b) => {
     return 0;
 });
     return (
-        <Box  display="block" width="100%">
-            <Navbar />
+        <Box display="block" width="100%">
+            <Navbar userMode={props.userMode} setUserMode={props.setUserMode} />
             <Box 
                 display="flex" 
                 flexDirection="row" 

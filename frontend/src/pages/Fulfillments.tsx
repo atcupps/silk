@@ -8,13 +8,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { countryNameToCode } from "../assets/CountryNameToCode"
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-import { Item, SharedProps, Ticket } from "../types/interfaces"
+import { Item, Ticket, UserMode } from "../types/interfaces"
 import Navbar from '../components/ui/Navbar';
 import { Divider, IconButton, ListItemAvatar, Radio, Toolbar } from '@mui/material';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const Fulfillments = (props: SharedProps) => {
+const Fulfillments = (props: {items:Item[],
+  tickets:Ticket[],userMode: UserMode, 
+  setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void}) => {
   const my_id = 1;
   // get list of countries by finding tickets assigned to us, then finding 
   // the items with matching item ids, then find their country
@@ -36,7 +38,7 @@ const Fulfillments = (props: SharedProps) => {
   return (
     <>
     <Box position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Navbar />
+      <Navbar userMode={props.userMode} setUserMode={props.setUserMode}/>
       </Box>
       <Drawer
         variant="permanent"
