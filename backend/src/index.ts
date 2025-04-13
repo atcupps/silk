@@ -51,7 +51,9 @@ app.post('/data', (req: Request, res: Response) => {
 });
 
 app.get('/api/imagetest', async (req: Request, res: Response) => {
-    res.send(await searchProductImage("iPhone 15"));
+    const imageUrl = await searchProductImage("iPhone 15");
+    console.log(imageUrl);
+    res.send(imageUrl);
 });
 
 // Start the server
