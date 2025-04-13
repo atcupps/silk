@@ -1,15 +1,15 @@
 import Navbar from '../components/ui/Navbar';
 import ListingCard from '../components/ui/ListingCard';
 import { colors } from "../assets/colors";
-import {Ticket, Item, User, SharedProps} from "../types/interfaces";
+import {Ticket, Item, User, SharedProps, UserMode} from "../types/interfaces";
 import { supabase } from "../App.tsx";
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import { Box } from '@mui/material';
 import WishlistCard from "../components/ui/WishlistCard.tsx"
+import { ChangeEvent } from 'react';
 
 const Wishlist = (props:  {items:Item[],
-  tickets:Ticket[],
+  tickets:Ticket[],userMode: UserMode, 
+  setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
 }) =>{
       /* grab the list of ticket items and filter by country, and if they are 
   unfufilled (fufiller id is null) */ 
@@ -27,7 +27,7 @@ const Wishlist = (props:  {items:Item[],
 
     return (
         <>
-            <Navbar />
+            <Navbar userMode={props.userMode} setUserMode={props.setUserMode} />
             <Box 
           display="flex" 
           flexDirection="column"  
@@ -35,7 +35,7 @@ const Wishlist = (props:  {items:Item[],
           justifyContent="flex-start"
           width="100%" 
           mb={2}
-          mt={2} 
+          mt={6} 
             >
           <h1 style={{ color: "#280003" }}>Your Wishlist</h1>
             </Box>

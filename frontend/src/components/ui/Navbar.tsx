@@ -1,18 +1,14 @@
 import { Flex, Box, Button } from '@chakra-ui/react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { colors } from "../../assets/colors";
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import { FormControlLabel, Switch, Tooltip } from '@mui/material';
+import {UserMode} from "../../types/interfaces"
 
-export const Navbar = () => {
-
-    const [checked, setChecked] = useState(true);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setChecked(event.target.checked);
-    };
+export const Navbar = (props:{ userMode: UserMode, 
+    setUserMode: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void}) => {
 
     return (
         <Flex
@@ -20,7 +16,7 @@ export const Navbar = () => {
             align="center"
             justify="space-between"
             p={4}
-            bg={colors.red1}
+            bg={props.userMode== UserMode.Fulfiller? colors.red1: colors.green1}
             color="white"
             position="fixed"
             top={0}
@@ -37,39 +33,44 @@ export const Navbar = () => {
 
             {/* Buttons */}
             <Box display="flex" flexDirection="row" alignItems="center" gap={4}>
+    {(props.userMode== UserMode.Fulfiller) && (
+        <>
             <Tooltip title="Find Items">
-            <Link to="/Browse" style={{ color: 'inherit' }}>
-                <TravelExploreIcon />
+                <Link to="/Browse" style={{ color: 'inherit' }}>
+                    <TravelExploreIcon />
                 </Link>
-                </Tooltip>
-                <Tooltip title="My Fulfillments">
-                    <Link to="/Fulfillments" style={{ color: 'inherit' }}>
-                        <LocalShippingIcon />
-                    </Link>
-                </Tooltip>
-    <FormControlLabel
-        control={
+            </Tooltip>
+            <Tooltip title="My Fulfillments">
+                <Link to="/Fulfillments" style={{ color: 'inherit' }}>
+                    <LocalShippingIcon />
+                </Link>
+            </Tooltip>
+        </>
+    )}
+        <FormControlLabel
+            control={
             <Switch
-                checked={checked}
-                onChange={handleChange}
+                checked={props.userMode == UserMode.Buyer}
+                onChange={props.setUserMode}
                 sx={{
-                     '& .MuiSwitch-switchBase.Mui-checked': {
-                        color: "white", // Default color when unswitched
-                    },
-                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                        backgroundColor: colors.red2,
-                    },
-                    '& .MuiSwitch-switchBase': {
-                        color: "white", // Default color when unswitched
-                    },
-                    '& .MuiSwitch-switchBase + .MuiSwitch-track': {
-                        backgroundColor: "white", // Default background color when unswitched
-                    },
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                    color: "white", // Default color when unswitched
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: colors.red2,
+                },
+                '& .MuiSwitch-switchBase': {
+                    color: "white", // Default color when unswitched
+                },
+                '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+                    backgroundColor: "white", // Default background color when unswitched
+                },
                 }}
             />
-        }
-        label="Buy"
-    />
+            }
+            label={props.userMode == UserMode.Buyer ? "Fulfill" : "Buy"}
+            labelPlacement={"start"}
+        />
                 <Button
                     variant="outline"
                     _hover={{ bg: colors.red2, color: 'white', boxShadow: 'none' }}

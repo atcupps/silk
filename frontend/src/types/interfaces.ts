@@ -30,3 +30,8 @@ export interface User {
     users: User[];
     setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   }
+
+  export enum UserMode {
+    Buyer = 'Buyer',
+    Fulfiller = 'Fulfiller',
+  }

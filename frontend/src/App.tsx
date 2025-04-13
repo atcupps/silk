@@ -1,18 +1,30 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import './App.css'
 import Browse from './pages/Browse'
 import Fulfillments from './pages/Fulfillments'
 import Wishlist from './pages/Wishlist'
 import Create from './pages/Create'
 import { createClient } from '@supabase/supabase-js';
-import {Ticket, Item, User, SharedProps} from "./types/interfaces";
-import React, { useEffect, useState } from 'react'
+import {Ticket, Item, User, SharedProps, UserMode} from "./types/interfaces";
+import React, { ChangeEvent, useEffect, useState } from 'react'
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
 function App() {
+  const [userMode, setUserMode] = useState<UserMode>(UserMode.Buyer);
+
+  const navigate = useNavigate();
+
+  function toggleMode() {
+    console.log("switching modes from " + userMode);
+    const newMode = userMode === UserMode.Buyer ? UserMode.Fulfiller : UserMode.Buyer;
+    setUserMode(newMode);
+    navigate(newMode === UserMode.Buyer ? '/Wishlist' : '/Browse');
+  }
+  const user_id = 1;
+
   const [items, setItems] = useState<Item[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -122,16 +134,14 @@ useEffect(() => {
   };
 }, []);
 
-console.log(tickets)
-console.log(items)
 
   return (
     <Routes>
       <Route path="/Browse" element={<Navigate to="/" />} />
-      <Route path="/" element={<Browse items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers} />} />
-      <Route path="/Fulfillments" element={<Fulfillments items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers} />} />
-      <Route path="/Wishlist" element={<Wishlist items={items} tickets={tickets} />} />
-      <Route path="/Create" element={<Create />} />
+      <Route path="/" element={<Browse items={items} tickets={tickets} setTickets={setTickets} userMode={userMode} setUserMode={toggleMode} />} />
+      <Route path="/Fulfillments" element={<Fulfillments items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
+      <Route path="/Wishlist" element={<Wishlist items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
+      <Route path="/Create" element={<Create items={items} setItems={setItems}  tickets={tickets} setTickets={setTickets}  userMode={userMode} setUserMode={toggleMode}/>} />
     </Routes>
   )
 }
