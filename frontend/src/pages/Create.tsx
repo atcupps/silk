@@ -1,5 +1,5 @@
 import Navbar from '../components/ui/Navbar';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,6 +10,8 @@ import { Ticket, Item, UserMode } from '../types/interfaces';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../App';
 import { useNavigate } from 'react-router-dom';
+import { colors } from "../assets/colors";
+import {Card, Image, Button, Badge, HStack} from "@chakra-ui/react"
 
 const Create = (props: {
   items: Item[],
@@ -17,7 +19,7 @@ const Create = (props: {
   tickets: Ticket[],
   setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
   userMode: UserMode,
-  setUserMode: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
+  setUserMode: () => void
 }) => {
   const { item_id, buyer_id } = useParams();
   const item = props.items.find(i => String(i.item_id) === item_id);
@@ -29,7 +31,7 @@ const Create = (props: {
       alert("Missing item, buyer, or date.");
       return;
     }
-  
+
     const { error } = await supabase.from('tickets').insert([
       {
         item_id: parseInt(item_id),
@@ -38,7 +40,7 @@ const Create = (props: {
         need_by: fulfillDate.toISOString(),
       }
     ]);
-  
+
     if (error) {
       console.error("Error creating ticket:", error.message);
       alert("Failed to create listing.");
@@ -46,7 +48,6 @@ const Create = (props: {
       navigate("/Wishlist");
     }
   };
-  
 
   if (!item) {
     return (
@@ -74,7 +75,7 @@ const Create = (props: {
         flex="1"
         overflow="hidden"
         display="flex"
-        justifyContent="center"
+        justifyContent="flex-start"
         alignItems="flex-start"
         px={{ xs: 2, md: 8 }}
         py={6}
@@ -82,97 +83,101 @@ const Create = (props: {
       >
         <Box width="100%" maxWidth="1200px" mt={4}>
           <Box display="flex" flexDirection="column" alignItems="flex-start" gap={4}>
-            <Typography
-              variant="h4"
-              fontWeight="bold"
-              color="black"
-              align="center"
-              width="100%"
-            >
-              Create Listing
-            </Typography>
+            <h1 style={{ color: colors.green1 }}>Create Listing</h1>
 
-            <Box display="flex" gap={4} flexWrap="wrap">
-              <Box
-                bgcolor="#f0f0f0"
-                p={3}
-                borderRadius={2}
-                width="350px"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-              >
-                <Typography variant="h5" fontWeight="bold" color="black" mb={2}>
-                  {item.item_name}
-                </Typography>
-                <img
-                  src={item.image_link}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/300x200?text=No+Image';
-                  }}
-                  style={{ borderRadius: 8, width: '100%', objectFit: 'cover', maxHeight: 200 }}
-                />
-                {/* <Typography mt={2} color="black">
-                  {item.item_name}
-                </Typography> */}
-              </Box>
-
-              <Box display="flex" flexDirection="column" gap={2} color="black">
-                <Typography>
-                  <strong>Country of Fulfillment:</strong>{' '}
-                  {countryCode ? (
-                    <span className={`fi fi-${countryCode}`} style={{ marginLeft: '8px' }}></span>
-                  ) : (
-                    'N/A'
-                  )}
-                </Typography>
-
-                <Typography>
-                  <strong>Price Difference:</strong> ${priceDiff.toFixed(2)}
-                </Typography>
-
-                <Typography>
-                  <strong>Link:</strong>{' '}
-                  <a href={item.link} target="_blank" rel="noreferrer" style={{ color: '#2a6bff' }}>
-                    click here!
-                  </a>
-                </Typography>
-
-                <Box>
-                  <Typography mb={1}><strong>Date of Fulfillment:</strong></Typography>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      label="Arrival"
+            <Card.Root flexDirection="row" maxW="1200px"  overflow="hidden" variant="subtle" border="none" shadow="none">
+              <Image
+                src={item.image_link}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/300x200?text=No+Image';
+                }}
+                  objectFit="cover"
+      maxW="500px"
+              />
+              <Box display="flex" flexDirection="column">
+              <Card.Body gap="2" bg={colors.green2} border="none">
+                <Card.Title fontSize="2xl" color={colors.green1}>{item.item_name}</Card.Title>
+                <HStack mt="4" wrap="wrap" maxWidth={1000} gap={8}>
+                  <Badge
+                    bg={colors.green1}
+                    fontSize="xl"
+                    p={4}
+                    _hover={{
+                      transform: "scale(1.1)",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >     <Typography>
+                   Country of Fulfillment:
+                    {countryCode ? (
+                      <span className={`fi fi-${countryCode}`} style={{ marginLeft: '8px' }}></span>
+                    ) : (
+                      'N/A'
+                    )}
+                       </Typography>
+                  </Badge>
+                  <Badge
+                    bg={colors.green1}
+                    fontSize="xl"
+                    p={4}
+                    _hover={{
+                      transform: "scale(1.1)",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >
+                    <Typography>
+                Price Difference: ${priceDiff.toFixed(2)}
+                    </Typography>
+                  </Badge>
+                  <Badge
+                    bg={colors.green1}
+                    fontSize="xl"
+                    p={4}
+                    _hover={{
+                      transform: "scale(1.1)",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >
+                    <Typography>
+                      <a 
+                      href={item.link} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                      onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                      onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                      >
+                      Item Link
+                      </a>
+                    </Typography>
+                  </Badge>
+                </HStack>
+        <Box mt={4} mb={4}> 
+                    <Typography mb={1}><strong>Date of Fulfillment:</strong></Typography>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DateTimePicker
                       views={['year', 'month', 'day']}
-                      sx={{ maxWidth: 200 }}
+                      sx={{ maxWidth: 200, border: 'none', borderRadius: '4px', backgroundColor: colors.bg }}
                       value={fulfillDate}
                       onChange={(fulfillDate) => setFulfillDate(fulfillDate)}
-                    />
-                  </LocalizationProvider>
-                </Box>
-
+                      />
+                    </LocalizationProvider>
+                  </Box>
+ 
+            
+              </Card.Body>
+              <Card.Footer gap="2" bg={colors.green2} border="none" style={{ justifyContent: "center" }}>
                 <Button
-                  variant="contained"
+                 bg={colors.green1}
+                 color={colors.bg}
                   onClick={handleCreateListing}
-                  sx={{
-                    width: 'fit-content',
-                    mt: 2,
-                    backgroundColor: '#1e2520',
-                    color: 'white',
-                    borderRadius: '20px',
-                    px: 3,
-                    py: 1,
-                    fontWeight: 'bold',
-                    boxShadow: '0 3px 6px rgba(0,0,0,0.2)',
-                    '&:hover': {
-                      backgroundColor: '#2d3630',
-                    },
-                  }}
-                >
-                  CREATE LISTING
+                  _hover={{ bg: colors.bg, color: colors.green1 }}
+                  transition="background-color 0.3s"
+                  >
+                  Create Listing
                 </Button>
+              </Card.Footer>
               </Box>
-            </Box>
+            </Card.Root>
           </Box>
         </Box>
       </Box>
