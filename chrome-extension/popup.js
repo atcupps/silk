@@ -55,10 +55,8 @@ function createPopup(item_id) {
 
   const shadowRoot = container.attachShadow({ mode: 'closed' });
 
-  // Create a <style> element to hold external CSS
+  // Load and apply CSS
   const styleElement = document.createElement('style');
-
-  // Fetch the CSS file
   fetch(chrome.runtime.getURL('popup.css'))
     .then(response => response.text())
     .then(css => {
@@ -67,32 +65,86 @@ function createPopup(item_id) {
     })
     .catch(err => console.error('Failed to load CSS:', err));
 
-  // Create the popup content
+  // Create popup HTML
   const popup = document.createElement('div');
   popup.className = 'popup';
   popup.innerHTML = `
+    <button class="close-btn" id="closePopupBtn">&times;</button>
     <h2>Silk found better deals!</h2>
     <button id="activateBtn">Create a ticket</button>
   `;
   shadowRoot.appendChild(popup);
 
-  // After popup is attached, set up button click listener
+  // Wait until DOM is rendered to attach event listeners
   setTimeout(() => {
     const activateBtn = shadowRoot.getElementById('activateBtn');
     if (activateBtn) {
       activateBtn.addEventListener('click', () => {
         const targetUrl = `http://localhost:5173/Create/${item_id}/1`;
-        window.open(targetUrl, '_blank'); // Opens in a new tab
+        window.open(targetUrl, '_blank');
       });
     }
-  }, 0); // Wait until the popup is rendered
+
+    const closeBtn = shadowRoot.getElementById('closePopupBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        container.remove();
+      });
+    }
+  }, 0);
+
+  document.documentElement.appendChild(container);
+}
+
+function createFailedPopup() {
+  const container = document.createElement('div');
+  container.style.all = 'initial';
+  container.style.position = 'fixed';
+  container.style.top = '20px';
+  container.style.right = '20px';
+  container.style.zIndex = '2147483647';
+  container.style.width = '340px';
+
+  const shadowRoot = container.attachShadow({ mode: 'closed' });
+
+  // Create and apply CSS
+  const styleElement = document.createElement('style');
+  fetch(chrome.runtime.getURL('popup.css'))
+    .then(response => response.text())
+    .then(css => {
+      styleElement.textContent = css;
+      shadowRoot.appendChild(styleElement);
+    })
+    .catch(err => console.error('Failed to load CSS:', err));
+
+  // Create popup content
+  const popup = document.createElement('div');
+  popup.className = 'popup';
+  popup.innerHTML = `
+    <button class="close-btn" id="closePopupBtn">&times;</button>
+    <h2>You have the best deal!</h2>
+    <p>Silk couldn't find another cheaper price.</p>
+  `;
+  shadowRoot.appendChild(popup);
+
+  // Attach close button listener
+  setTimeout(() => {
+    const closeBtn = shadowRoot.getElementById('closePopupBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        container.remove();
+      });
+    }
+  }, 0);
 
   document.documentElement.appendChild(container);
 }
 
 
+
 setTimeout(() => {
   console.log("CHECKING PAGE FOR ADD TO CART...");
+  
   if (hasAddToCartButton()) {
     console.log("[TERRAFIN] Sending request to backend");
 
@@ -105,15 +157,17 @@ setTimeout(() => {
       })
       .then(data => {
         console.log('GET Response:', data);
-        itemId = data.item_id;
-        createPopup(itemId); // Create the popup after successful response
+        const itemId = data.item_id;
+        createPopup(itemId);
       })
       .catch(err => {
         console.error('GET Error:', err);
+        createFailedPopup();
       });
 
   } else {
     console.log('Not a product page — no Add to Cart button found.');
   }
 }, 2000);
+
 
