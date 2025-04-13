@@ -21,7 +21,14 @@ const WishlistCard = (props: {item:Item,
           <a 
             href={props.item.link} 
             target="_blank" 
-            style={{ wordWrap: "break-word", color: "inherit", textDecoration: "none" }}
+            style={{ 
+              wordWrap: "break-word", 
+              color: "inherit", 
+              textDecoration: "none", 
+              transition: "text-decoration 0.2s ease-in-out" 
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
+            onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
           >
             {props.item.link}
           </a>
