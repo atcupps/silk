@@ -24,7 +24,9 @@ const Wishlist = (props:  {items:Item[],
     ))
     .map(ticket => ticket.item_id);
   
-  const relevantItems =  relevantTicketItemIds.map(itemId => props.items.find(item => item.item_id === itemId)) as Item[];
+  const relevantItems =  relevantTicketItemIds
+    .map(itemId => props.items.find(item => item.item_id === itemId))
+    .filter((item): item is Item => item !== undefined && item !== null);
 
     return (
         <>
