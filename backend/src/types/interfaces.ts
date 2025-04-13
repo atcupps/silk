@@ -23,13 +23,17 @@ export interface User {
 }
 
 export interface Link {
+  item_name: string;
   link: string;
   country_code: string;
 }
 
 export interface Price {
+  item_name: string;
   country_code: string;
-  priceUSD: Number;
+  price_domestic: Number;
+  price_foreign: Number;
+  image_link: string;
 }
 
 export interface ForeignPrice {
