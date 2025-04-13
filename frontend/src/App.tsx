@@ -142,7 +142,7 @@ useEffect(() => {
       <Route path="/" element={<Browse items={items} tickets={tickets} setTickets={setTickets} userMode={userMode} setUserMode={toggleMode} />} />
       <Route path="/Fulfillments" element={<Fulfillments items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
       <Route path="/Wishlist" element={<Wishlist items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
-      <Route path="/Create" element={<Create items={items} setItems={setItems}  tickets={tickets} setTickets={setTickets}  userMode={userMode} setUserMode={toggleMode}/>} />
+      <Route path="/Create/:item_id/:buyer_id" element={<Create items={items} setItems={setItems}  tickets={tickets} setTickets={setTickets}  userMode={userMode} setUserMode={toggleMode}/>} />
     </Routes>
   )
 }
