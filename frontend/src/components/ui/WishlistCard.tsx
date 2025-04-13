@@ -34,7 +34,7 @@ const WishlistCard = (props: {item:Item,
               transition: "transform 0.2s ease-in-out",
             }}
           >
-            <b>${props.item.price_us - props.item.price_src}</b> saved
+            <b>${(props.item.price_us - props.item.price_src).toFixed(2)}</b> saved
           </Badge>
           <Badge
             bg={colors.green2}

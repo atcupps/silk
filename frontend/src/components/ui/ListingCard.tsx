@@ -16,7 +16,7 @@ const ListingCard = (props: {item:Item,
       <Card.Body gap="2" bg={colors.red2} border="none">
       <Card.Title>{props.item.item_name}</Card.Title>
       <Text textStyle="2l" fontWeight="medium" letterSpacing="tight" mt="2">
-        {props.item.price_us - props.item.price_src}
+        {(props.item.price_us - props.item.price_src).toFixed(2)}
       </Text>
       <Text textStyle="2l" fontWeight="medium" letterSpacing="tight" mt="2">
         {new Date(props.tickets.find(ticket =>

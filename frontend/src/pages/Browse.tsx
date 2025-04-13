@@ -13,7 +13,7 @@ import { countryNameToCode } from "../assets/CountryNameToCode"
 
 const Browse = (props: {items:Item[],
     tickets:Ticket[], setTickets:  React.Dispatch<React.SetStateAction<Ticket[]>>, userMode: UserMode, 
-setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void}) =>{
+setUserMode:   () => void}) =>{
       /* grab the list of ticket items and filter by country, and if they are 
   unfufilled (fufiller id is null) */ 
 

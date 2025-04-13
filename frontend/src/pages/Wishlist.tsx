@@ -6,10 +6,11 @@ import { supabase } from "../App.tsx";
 import { Box } from '@mui/material';
 import WishlistCard from "../components/ui/WishlistCard.tsx"
 import { ChangeEvent } from 'react';
+import { useEffect } from 'react';
 
 const Wishlist = (props:  {items:Item[],
   tickets:Ticket[],userMode: UserMode, 
-  setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
+  setUserMode:  () => void
 }) =>{
       /* grab the list of ticket items and filter by country, and if they are 
   unfufilled (fufiller id is null) */ 
