@@ -47,7 +47,7 @@ app.get('/api/screenshot', async (req: Request, res: Response) => {
         throw Error("Couldn't get US domestic price data.");
     }
 
-    if (price.country_code == "US") {
+    if (price.country_code == "US" || price.price_domestic == null || Number.isNaN(price.price_domestic)) {
         throw Error("US was cheapest.");
     }
 
@@ -132,7 +132,7 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price | null> {
                 item_name: null,
                 country_code: link.country_code,
                 price_domestic: null,
-                price_foreign: Number.MAX_VALUE, // Use high number so it doesn't get picked
+                price_foreign: Number.MAX_SAFE_INTEGER, // Use high number so it doesn't get picked
                 image_link:null,
                 website_link: link.link,
             };
