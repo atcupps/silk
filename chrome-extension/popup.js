@@ -44,7 +44,7 @@ function cleanProductUrl(url) {
 }
 
 // Function that creates the popup
-function createPopup() {
+function createPopup(item_id) {
   const container = document.createElement('div');
   container.style.all = 'initial';
   container.style.position = 'fixed';
@@ -78,22 +78,44 @@ function createPopup() {
   `;
   shadowRoot.appendChild(popup);
 
+  // After popup is attached, set up button click listener
+  setTimeout(() => {
+    const activateBtn = shadowRoot.getElementById('activateBtn');
+    if (activateBtn) {
+      activateBtn.addEventListener('click', () => {
+        const targetUrl = `http://localhost:5173/Create/${item_id}/1`;
+        window.open(targetUrl, '_blank'); // Opens in a new tab
+      });
+    }
+  }, 0); // Wait until the popup is rendered
+
   document.documentElement.appendChild(container);
 }
+
 
 setTimeout(() => {
   console.log("CHECKING PAGE FOR ADD TO CART...");
   if (hasAddToCartButton()) {
-    // createPopup();
-    console.log("[TERRAFIN] Sending request to backend")
+    console.log("[TERRAFIN] Sending request to backend");
+
     const link = cleanProductUrl(window.location.href);
 
     fetch(`http://localhost:3000/api/screenshot?link=${encodeURIComponent(link)}`)
-      .then(res => res.text())
-      .then(data => console.log('GET Response:', data))
-      .catch(err => console.error('GET Error:', err));
+      .then(res => {
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        return res.text(); // or .json() if you expect JSON
+      })
+      .then(data => {
+        console.log('GET Response:', data);
+        itemId = data.item_id;
+        createPopup(itemId); // 👈 Create the popup after successful response
+      })
+      .catch(err => {
+        console.error('GET Error:', err);
+      });
 
   } else {
     console.log('Not a product page — no Add to Cart button found.');
   }
 }, 2000);
+

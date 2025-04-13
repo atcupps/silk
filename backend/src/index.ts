@@ -22,8 +22,10 @@ const supabase = createClient(supabaseURL, supabaseKey);
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
