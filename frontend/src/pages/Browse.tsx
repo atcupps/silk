@@ -40,11 +40,12 @@ setUserMode:  (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void})
       dayjs(ticket.need_by).isBefore(dayjs(endDate))
     ))
     .map(ticket => ticket.item_id) : openTickets.filter(ticket=>(ticket.fulfiller_id===null)).map(ticket => ticket.item_id);
-  
-  const relevantItems =  props.tickets
+
+  const relevantItems = props.tickets
     .filter(ticket => ticket.fulfiller_id === null)
     .map(ticket => ticket.item_id)
-    .map(itemId => props.items.find(item => item.item_id === itemId)) as Item[];
+    .map(itemId => props.items.find(item => item.item_id === itemId))
+    .filter((item): item is Item => item !== undefined);
   
   const uniqueCountries = Array.from(new Set(relevantItems.map(item => item.src_country)));
 
@@ -67,7 +68,7 @@ const sortedFilteredItems = filteredItems.sort((a, b) => {
     return 0;
 });
     return (
-        <Box display="block" width="100%">
+        <Box display="flex" flexDirection="column" width="100%" minHeight="100vh">
             <Navbar userMode={props.userMode} setUserMode={props.setUserMode} />
             <Box 
                 display="flex" 
