@@ -87,29 +87,32 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
     console.log("Finding the lowest price.");
 
     const browser = await puppeteer.launch();
-    const page = await browser.newPage();
 
-    let returnVal: Price = { country_code: "USA", priceUSD: Number.MAX_VALUE };
     const hash: string = hashURL(links[0].link);
-    for (let i = 0; i < links.length; i++) {
-        const link: Link = links[i];
-        const country_code: string = link.country_code;
-        const linkString: string = link.link;
 
-        const price: Number = await fetchPriceUSD(linkString, country_code, hash, page);
-        if (price < returnVal.priceUSD) {
-            returnVal = {
-                country_code,
-                priceUSD: price
-            };
-        }
-    }
+    // Start all fetchPriceUSD calls concurrently
+    const pricePromises = links.map(async (link) => {
+        const price = await fetchPriceUSD(link.link, link.country_code, hash, await browser.newPage());
+        return {
+            country_code: link.country_code,
+            priceUSD: price
+        };
+    });
 
-    browser.close();
+    // Wait for all promises to resolve
+    const results = await Promise.all(pricePromises);
 
-    console.log("Lowest price found: " + returnVal);
-    return returnVal;
+    await browser.close();
+
+    // Find the entry with the lowest price
+    const lowest = results.reduce((min, current) => {
+        return current.priceUSD < min.priceUSD ? current : min;
+    }, { country_code: "USA", priceUSD: Number.MAX_VALUE });
+
+    console.log("Lowest price found:", lowest);
+    return lowest;
 }
+
 
 function hashURL(url: string): string {
     return createHash('sha256').update(url).digest('hex');
