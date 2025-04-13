@@ -231,7 +231,11 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
 
     try {
       const parsed: ForeignPrice = JSON.parse(responseText);
-      console.log("Successfully extracted price:", parsed);
+      if (parsed.currency == null || parsed.currency == "" || parsed.price == null) {
+        console.log(`Failed to extract price for ${country}`);
+        return 100000000;
+      }
+      console.log(`Successfully extracted price ${parsed.currency, parsed.price} for ${country}`);
       return await convertToUSD(parsed.currency, parsed.price);
     } catch (err) {
       console.error("Failed to parse Gemini output:", responseText);
