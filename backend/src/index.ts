@@ -127,20 +127,20 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
         fs.mkdirSync(dir, { recursive: true });
     }
 
-    await page.setViewport({
-        width: 1920,
-        height: 1080
-    });
+    // await page.setViewport({
+    //     width: 1920,
+    //     height: 1080
+    // });
 
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.setExtraHTTPHeaders({
-    'accept-language': 'en-US,en;q=0.9',
-    });
+    // await page.setExtraHTTPHeaders({
+    // 'accept-language': 'en-US,en;q=0.9',
+    // });
 
     await page.goto(link, { waitUntil: 'networkidle2' });
     await page.screenshot({
         path: outputPath,
-        fullPage: false
+        fullPage: true
     });
 
     return 0;
