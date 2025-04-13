@@ -19,7 +19,7 @@ import { supabase } from "../App.tsx";
 const Fulfillments = (props: {items:Item[],
   tickets:Ticket[],userMode: UserMode, 
   setUserMode:  () => void}) => {
-  const my_id = 1;
+  const my_id = 2;
   // get list of countries by finding tickets assigned to us, then finding 
   // the items with matching item ids, then find their country
   const alltickets: Ticket[] = props.tickets ?? [];
