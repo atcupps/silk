@@ -34,6 +34,7 @@ export interface Price {
   price_domestic: Number;
   price_foreign: Number;
   image_link: string;
+  website_link: string;
 }
 
 export interface ForeignPrice {
