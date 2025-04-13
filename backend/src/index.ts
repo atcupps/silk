@@ -53,12 +53,13 @@ async function generateAlternateLinks(link: string): Promise<Link[]> {
     const prompt = 
 `The following is a link for a US website showing a specific product:` + link +
 `
-Create a JSON array containing exactly 11 elements. The first element should be the provided US link. Then include 10 links to the exact same product on different country versions of this website, each paired with the country's ISO 3166-1 alpha-2 code. 
+Create a JSON array containing exactly 11 elements. Each element should have an item name including brand in english of the specific product, which is the same across all elements. The first element should be the provided US link. Then include 10 links to the exact same product on different country versions of this website, each paired with the country's ISO 3166-1 alpha-2 code. 
 
 The output must exactly follow this JSON format:
 
 [
   {
+    "item_name": "string",
     "link": "string",
     "country_code": "string"
   }
@@ -97,14 +98,20 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
         try {
             const price = await fetchPriceUSD(link.link, link.country_code, hash, await browser.newPage());
             return {
+                item_name: link.item_name,
                 country_code: link.country_code,
-                priceUSD: price
+                price_domestic: null,
+                price_foreign: price,
+                image_link: null
             };
         } catch (error) {
             console.error(`Error fetching price for ${link.country_code}:`, error);
             return {
+                item_name: null,
                 country_code: link.country_code,
-                priceUSD: Number.MAX_VALUE // Use high number so it doesn't get picked
+                price_domestic: null,
+                price_foreign: Number.MAX_VALUE, // Use high number so it doesn't get picked
+                image_link:null
             };
         }
     });
@@ -113,11 +120,17 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
     await browser.close();
 
     // Find the lowest price among successful results
-    const lowest: Price = { country_code: "USA", priceUSD: Number.MAX_VALUE };
+    const lowest: Price = { 
+      item_name: links[0].item_name, 
+      country_code: "US", 
+      price_domestic: results[0].price_foreign,
+      price_foreign: Number.MAX_VALUE,
+      image_link: await searchProductImage(links[0].item_name)
+    };
     results.forEach((current) => {
-      if (current.priceUSD != null && current.priceUSD < lowest.priceUSD) {
+      if (current.price_foreign != null && current.price_foreign < lowest.price_foreign) {
         lowest.country_code = current.country_code;
-        lowest.priceUSD = current.priceUSD;
+        lowest.price_foreign = current.price_foreign;
       }
     });
 
@@ -166,7 +179,7 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
     const prompt = 
     `This is a screenshot for a product on a website for the country with the following ISO 3166-1 alpha-2 code: ` + country + `. Extract the price of the product; you should only find a single price, which should be the price of the main product on the page and not any others. 
     If you cannot confidently see a price for a main item on the page, just return null for the price.
-    Additionally, return the local currency the price is given in as a ISO 4217 code.
+    Additionally, return the local currency the price is given in as a ISO 4217 code in all caps.
     Please respond only in JSON format as shown below. Return only a JSON object. Do not include markdown formatting (like triple backticks), comments, or explanations. Your output should be directly parsable by a JSON parser.
     {
     "currency": "string",
@@ -225,4 +238,22 @@ async function convertToUSD(currency: string, price: Number): Promise<Number> {
         console.error('Error during conversion:', error);
         return NaN; // Return NaN to signal an error.
     }
+}
+
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY!;
+const CX = process.env.GOOGLE_CX!;
+
+export async function searchProductImage(productName: string): Promise<string> {
+  const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(
+    productName
+  )}&cx=${CX}&key=${GOOGLE_API_KEY}&searchType=image`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.items && data.items.length > 0) {
+    return data.items[0].link;
+  } else {
+    return "";
+  }
 }
