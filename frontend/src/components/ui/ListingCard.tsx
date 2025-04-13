@@ -33,7 +33,7 @@ const ListingCard = (props: {item:Item,
         if (updatedTicketId) {
           const { data, error } = await supabase
           .from('tickets')
-          .update({ fulfiller_id: 1 }) // TODO update this hardcoded variable to actual
+          .update({ fulfiller_id: 2 }) // TODO update this hardcoded variable to actual
           .eq('item_id', updatedTicketId.item_id)
           .select();
 
