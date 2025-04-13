@@ -41,7 +41,15 @@ app.get('/api/screenshot', async (req: Request, res: Response) => {
     // Get a list of other country links
     const alternateLinks: Link[] = await generateAlternateLinks(link);
 
-    let price: Price = await fetchLowestPriceUSD(alternateLinks);
+    let price: Price | null = await fetchLowestPriceUSD(alternateLinks);
+
+    if (price == null) {
+        throw Error("Couldn't get US domestic price data.");
+    }
+
+    if (price.country_code == "US") {
+        throw Error("US was cheapest.");
+    }
 
     console.log("SENDING GET RESPONSE");
     res.send(JSON.stringify({"item_id": await uploadPrice(price)}));
@@ -97,7 +105,7 @@ Do not include markdown formatting, additional explanations, or comments. Your o
     return jsonData;
 }
 
-async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
+async function fetchLowestPriceUSD(links: Link[]): Promise<Price | null> {
     console.log("Finding the lowest price.");
 
     const browser = await puppeteer.launch({
@@ -135,6 +143,9 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
     await browser.close();
 
     // Find the lowest price among successful results
+    if ((results[0].price_foreign as number) >= 100000000) {
+        return null;
+    }
     const lowest: Price = { 
       item_name: links[0].item_name, 
       country_code: "US", 
@@ -296,7 +307,7 @@ export async function uploadPrice(price: Price): Promise<number> {
   const { error: insertError } = await supabase.from('items').insert({
     item_id: newId,
     item_name: price.item_name,
-    src_country: codeToCountryName[price.country_code],
+    src_country: codeToCountryName[price.country_code.toLowerCase()],
     link: price.website_link,
     price_us: price.price_domestic,
     price_src: price.price_foreign,
