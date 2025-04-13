@@ -8,7 +8,7 @@ import { FormControlLabel, Switch, Tooltip } from '@mui/material';
 import {UserMode} from "../../types/interfaces"
 
 export const Navbar = (props:{ userMode: UserMode, 
-    setUserMode: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void}) => {
+    setUserMode: () => void}) => {
 
     return (
         <Flex

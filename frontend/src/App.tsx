@@ -13,7 +13,7 @@ export const supabase = createClient(
 );
 
 function App() {
-  const [userMode, setUserMode] = useState<UserMode>(UserMode.Buyer);
+  const [userMode, setUserMode] = useState<UserMode>(UserMode.Fulfiller);
 
   const navigate = useNavigate();
 
@@ -23,6 +23,7 @@ function App() {
     setUserMode(newMode);
     navigate(newMode === UserMode.Buyer ? '/Wishlist' : '/Browse');
   }
+
   const user_id = 1;
 
   const [items, setItems] = useState<Item[]>([]);
