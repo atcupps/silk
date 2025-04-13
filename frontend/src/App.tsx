@@ -4,6 +4,7 @@ import Browse from './pages/Browse'
 import Fulfillments from './pages/Fulfillments'
 import Wishlist from './pages/Wishlist'
 import Create from './pages/Create'
+import Signup from './pages/Signup'
 import { createClient } from '@supabase/supabase-js';
 import {Ticket, Item, User, SharedProps, UserMode} from "./types/interfaces";
 import React, { ChangeEvent, useEffect, useState } from 'react'
@@ -13,7 +14,7 @@ export const supabase = createClient(
 );
 
 function App() {
-  const [userMode, setUserMode] = useState<UserMode>(UserMode.Fulfiller);
+  const [userMode, setUserMode] = useState<UserMode>(UserMode.Buyer);
 
   const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ function App() {
     navigate(newMode === UserMode.Buyer ? '/Wishlist' : '/Browse');
   }
 
-  const user_id = 1;
+const userId=1;
 
   const [items, setItems] = useState<Item[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -138,11 +139,12 @@ useEffect(() => {
 
   return (
     <Routes>
-      <Route path="/Browse" element={<Navigate to="/" />} />
-      <Route path="/" element={<Browse items={items} tickets={tickets} setTickets={setTickets} userMode={userMode} setUserMode={toggleMode} />} />
+      <Route path="/" element={<Navigate to="/Signup" />} />
+      <Route path="/Browse" element={<Browse items={items} tickets={tickets} setTickets={setTickets} userMode={userMode} setUserMode={toggleMode} />} />
       <Route path="/Fulfillments" element={<Fulfillments items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
       <Route path="/Wishlist" element={<Wishlist items={items} tickets={tickets}  userMode={userMode} setUserMode={toggleMode} />} />
       <Route path="/Create/:item_id/:buyer_id" element={<Create items={items} setItems={setItems}  tickets={tickets} setTickets={setTickets}  userMode={userMode} setUserMode={toggleMode}/>} />
+      <Route path="/Signup" element={<Signup/>} />
     </Routes>
   )
 }
