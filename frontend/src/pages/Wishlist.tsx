@@ -40,7 +40,7 @@ const Wishlist = (props:  {items:Item[],
           mb={2}
           mt={6} 
             >
-          <h1 style={{ color: "#280003" }}>Your Wishlist</h1>
+          <h1 style={{ color:colors.green1 }}>Your Wishlist</h1>
             </Box>
             
 
