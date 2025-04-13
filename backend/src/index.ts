@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import {GoogleGenAI} from '@google/genai';
 import { Link, Price } from './types/interfaces';
 import dotenv from 'dotenv';
-import puppeteer, { Browser, Page } from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
@@ -131,6 +131,12 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
         width: 1920,
         height: 1080
     });
+
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    await page.setExtraHTTPHeaders({
+    'accept-language': 'en-US,en;q=0.9',
+    });
+
     await page.goto(link, { waitUntil: 'networkidle2' });
     await page.screenshot({
         path: outputPath,
