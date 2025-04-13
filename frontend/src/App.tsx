@@ -130,7 +130,7 @@ console.log(items)
       <Route path="/Browse" element={<Navigate to="/" />} />
       <Route path="/" element={<Browse items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers} />} />
       <Route path="/Fulfillments" element={<Fulfillments items={items} setItems={setItems} tickets={tickets} setTickets={setTickets} users={users} setUsers={setUsers} />} />
-      <Route path="/Wishlist" element={<Wishlist />} />
+      <Route path="/Wishlist" element={<Wishlist items={items} tickets={tickets} />} />
       <Route path="/Create" element={<Create />} />
     </Routes>
   )

@@ -4,4 +4,6 @@ export const colors = {
   red3: "#8c6f6f",
   red4: "#E1E6DB",
   bg:"#F1F0EF",
+  green1:"#25332d",
+  green2:"#979b8d",
 };
