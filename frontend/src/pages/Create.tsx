@@ -124,8 +124,46 @@ const Create = (props: {
                       transition: "transform 0.2s ease-in-out",
                     }}
                   >
-                    <Typography>
-                Price Difference: ${priceDiff.toFixed(2)}
+                      <Typography>
+                      <span className={`fi fi-us`} style={{ marginRight: '8px' }}></span>
+                       </Typography>  <Typography>
+                US Price: ${item.price_us.toFixed(2)}
+                    </Typography>
+                    </Badge>
+                  <Badge
+                    bg={colors.green1}
+                    fontSize="xl"
+                    p={4}
+                    _hover={{
+                      transform: "scale(1.1)",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >
+                      <Typography>
+                    {countryCode ? (
+                      <span className={`fi fi-${countryCode}`} style={{ marginRight: '8px' }}></span>
+                    ) : (
+                      'N/A'
+                    )}
+                       </Typography>
+
+                    <Typography >
+                {item.src_country} Price: ${item.price_src.toFixed(2)}
+                    </Typography>
+                    </Badge>
+                  <Badge
+                    bg={colors.green1}
+                    fontSize="xl"
+                    p={4}
+                    _hover={{
+                      transform: "scale(1.1)",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >
+                    <Typography 
+                      style={{ textDecoration: 'underline' }}
+                    >
+                 Price Difference: ${priceDiff.toFixed(2)}
                     </Typography>
                   </Badge>
                   <Badge
