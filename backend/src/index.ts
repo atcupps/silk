@@ -113,9 +113,13 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
     await browser.close();
 
     // Find the lowest price among successful results
-    const lowest = results.reduce((min, current) => {
-        return current.priceUSD < min.priceUSD ? current : min;
-    }, { country_code: "USA", priceUSD: Number.MAX_VALUE });
+    const lowest: Price = { country_code: "USA", priceUSD: Number.MAX_VALUE };
+    results.forEach((current) => {
+      if (current.priceUSD != null && current.priceUSD < lowest.priceUSD) {
+        lowest.country_code = current.country_code;
+        lowest.priceUSD = current.priceUSD;
+      }
+    });
 
     console.log("Lowest price found:", lowest);
     return lowest;
@@ -125,6 +129,16 @@ async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
 function hashURL(url: string): string {
     return createHash('sha256').update(url).digest('hex');
   }
+
+// Helper to encode image
+function fileToGenerativePart(filePath: string, mimeType: string) {
+  return {
+    inlineData: {
+      data: Buffer.from(fs.readFileSync(filePath)).toString("base64"),
+      mimeType,
+    },
+  };
+}
 
 async function fetchPriceUSD(link: string, country: string, hash: string, page: Page): Promise<Number> {
     console.log('Getting price for: ' + country);
@@ -149,5 +163,37 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
         fullPage: true
     });
 
-    return 0;
+    const prompt = 
+    `This is a screenshot for a product on a website for the country with the following ISO 3166-1 alpha-3 code: ` + country + `. Extract the price of the product; you should only find a single price, which should be the price of the main product on the page and not any others. 
+    If you cannot confidently see a price for a main item on the page, just return null for the price.
+    Additionally, return the local currency the price is given in as a ISO 4217 code.
+    Please respond only in JSON format as shown below. Return only a JSON object. Do not include markdown formatting (like triple backticks), comments, or explanations. Your output should be directly parsable by a JSON parser.
+    {
+    "currency": "string",
+    "price": number
+    }
+    Make sure your output is exactly in this format.
+    `;
+
+    const imagePart = fileToGenerativePart(outputPath, 'image/png');
+
+    console.log('Sending Gemini API request to extract price.');
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-001',
+        contents: [prompt, imagePart],
+    });
+    const responseTextRaw = response.text;
+    if (responseTextRaw == undefined) {
+        throw new Error('Gemini API call returned undefined response.');
+    }
+    const responseText = responseTextRaw.slice(8, -4);
+
+    try {
+      const parsed = JSON.parse(responseText);
+      console.log("Successfully extracted price:", parsed);
+      return parsed.price;
+    } catch (err) {
+      console.error("Failed to parse Gemini output:", responseText);
+      throw new Error("Invalid JSON response from Gemini.");
+    }
 }
