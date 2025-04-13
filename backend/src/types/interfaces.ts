@@ -31,3 +31,8 @@ export interface Price {
   country_code: string;
   priceUSD: Number;
 }
+
+export interface ForeignPrice {
+  currency: string;
+  price: number;
+}

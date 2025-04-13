@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import {GoogleGenAI} from '@google/genai';
-import { Link, Price } from './types/interfaces';
+import { ForeignPrice, Link, Price } from './types/interfaces';
 import dotenv from 'dotenv';
 import puppeteer, { Page } from 'puppeteer';
 import fs from 'fs';
@@ -189,11 +189,40 @@ async function fetchPriceUSD(link: string, country: string, hash: string, page: 
     const responseText = responseTextRaw.slice(8, -4);
 
     try {
-      const parsed = JSON.parse(responseText);
+      const parsed: ForeignPrice = JSON.parse(responseText);
       console.log("Successfully extracted price:", parsed);
-      return parsed.price;
+      return await convertToUSD(parsed.currency, parsed.price);
     } catch (err) {
       console.error("Failed to parse Gemini output:", responseText);
       throw new Error("Invalid JSON response from Gemini.");
+    }
+}
+
+async function convertToUSD(currency: string, price: Number): Promise<Number> {
+    try {
+        // Fetch exchange rate from a public API.  This API may have limitations.
+        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`); //Using USD as base
+        if (!response.ok) {
+            // Handle HTTP errors (e.g., 404, 500)
+            console.error(`Error fetching exchange rate: ${response.status} ${response.statusText}`);
+            return NaN; //  Return NaN to indicate failure.  Caller should check for this.
+        }
+        const data = await response.json();
+
+        // Extract the exchange rate.  The API response structure is assumed here.
+        const exchangeRate = data.rates[currency.toUpperCase()];
+        if (typeof exchangeRate !== 'number') {
+            console.error(`Exchange rate for ${currency} not found in API response.`);
+            return NaN;
+        }
+
+        // Perform the conversion.
+        const priceInUSD = price.valueOf() / exchangeRate;
+        return priceInUSD;
+
+    } catch (error) {
+        // Handle network errors, JSON parsing errors, and other exceptions.
+        console.error('Error during conversion:', error);
+        return NaN; // Return NaN to signal an error.
     }
 }
