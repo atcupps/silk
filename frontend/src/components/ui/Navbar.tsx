@@ -29,7 +29,7 @@ export const Navbar = (props: { userMode: UserMode, setUserMode: () => void }) =
           
             <Box display="flex" flexDirection="row" alignItems="center">
                 <Box marginRight={2}>
-                        <Image src="SilkLogo.svg" height="40px" />
+                        <Image src="../../public/SilkLogo.svg" height="40px" />
                 </Box>
                 <Link to="/" style={{ color: colors.red4 }}>
                     silk
