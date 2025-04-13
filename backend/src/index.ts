@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express';
 import {GoogleGenAI} from '@google/genai';
-import { Link } from './types/interfaces';
+import { Link, Price } from './types/interfaces';
 import dotenv from 'dotenv';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
+import fs from 'fs';
+import path from 'path';
+import { createHash } from 'crypto';
 
 dotenv.config();
 
@@ -19,25 +22,17 @@ app.use(express.json());
 app.get('/api/screenshot', async (req: Request, res: Response) => {
     // extract link
     const link: string = req.query.link as string;
+    console.log("-= RECEIVED GET SCREENSHOT REQUEST =-")
+    console.log("link: " + link);
 
     // Get a list of other country links
     const alternateLinks: Link[] = await generateAlternateLinks(link);
-    console.log(alternateLinks);
 
-    let lowestPriceCountry: string = "USA";
-    let lowestPriceValue: Number = Number.MAX_VALUE; // USD
-    alternateLinks.forEach(async (alternateLink) => {
-        const country_code: string = alternateLink.country_code;
-        const link: string = alternateLink.link;
+    let price: Price = await fetchLowestPriceUSD(alternateLinks);
 
-        const price: Number = await fetchPriceUSD(link);
-        if (price < lowestPriceValue) {
-            lowestPriceCountry = country_code;
-            lowestPriceValue = price;
-        }
-    })
-
-    res.send(JSON.stringify(alternateLinks));
+    console.log("SENDING GET RESPONSE");
+    res.send(JSON.stringify(price));
+    console.log("GET RESPONSE SENT\n\n")
 });
 
 // Define a POST route that echoes back the JSON sent in the request body
@@ -88,20 +83,56 @@ Do not include markdown formatting, additional explanations, or comments. Your o
     return jsonData;
 }
 
-async function fetchPriceUSD(link: string): Promise<Number> {
-    // Robert do ur code here
+async function fetchLowestPriceUSD(links: Link[]): Promise<Price> {
+    console.log("Finding the lowest price.");
+
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    const outputPath = './backend/screenshots/page.png';
 
-    // Navigate to the URL
+    let returnVal: Price = { country_code: "USA", priceUSD: Number.MAX_VALUE };
+    const hash: string = hashURL(links[0].link);
+    for (let i = 0; i < links.length; i++) {
+        const link: Link = links[i];
+        const country_code: string = link.country_code;
+        const linkString: string = link.link;
+
+        const price: Number = await fetchPriceUSD(linkString, country_code, hash, page);
+        if (price < returnVal.priceUSD) {
+            returnVal = {
+                country_code,
+                priceUSD: price
+            };
+        }
+    }
+
+    browser.close();
+
+    console.log("Lowest price found: " + returnVal);
+    return returnVal;
+}
+
+function hashURL(url: string): string {
+    return createHash('sha256').update(url).digest('hex');
+  }
+
+async function fetchPriceUSD(link: string, country: string, hash: string, page: Page): Promise<Number> {
+    const outputPath = './screenshots/' + hash + '/' + country + '.png';
+
+    // Ensure the directory exists
+    const dir = path.dirname(outputPath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    await page.setViewport({
+        width: 1920,
+        height: 1080
+    });
     await page.goto(link, { waitUntil: 'networkidle2' });
-  
-    // Take a screenshot and save to the specified path
-    await page.screenshot({ path: outputPath, fullPage: false });
-  
-    // Close the browser
-    await browser.close();
+    await page.screenshot({
+        path: outputPath,
+        fullPage: false
+    });
 
     return 0;
 }

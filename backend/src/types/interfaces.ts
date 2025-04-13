@@ -26,3 +26,8 @@ export interface Link {
   link: string;
   country_code: string;
 }
+
+export interface Price {
+  country_code: string;
+  priceUSD: Number;
+}
