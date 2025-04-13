@@ -1,4 +1,3 @@
-console.log("START");
 // Function to detect presence of an "Add to Cart" or similar button
 function hasAddToCartButton() {
   const buttons = document.querySelectorAll('button');
@@ -17,6 +16,31 @@ function hasAddToCartButton() {
     }
   }
   return false;
+}
+
+function cleanProductUrl(url) {
+  const urlObj = new URL(url);
+
+  // These are common tracking parameters you likely want to remove
+  const paramsToRemove = [
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_term',
+    'utm_content',
+    'gclid',
+    'gbraid',
+    'gad_source',
+    'gclsrc',
+    'utm_source_platform',
+    'utm_id'
+  ];
+
+  for (const param of paramsToRemove) {
+    urlObj.searchParams.delete(param);
+  }
+
+  return urlObj.toString();
 }
 
 // Function that creates the popup
@@ -60,10 +84,16 @@ function createPopup() {
 setTimeout(() => {
   console.log("CHECKING PAGE FOR ADD TO CART...");
   if (hasAddToCartButton()) {
-    createPopup();
+    // createPopup();
+    console.log("[TERRAFIN] Sending request to backend")
+    const link = cleanProductUrl(window.location.href);
+
+    fetch(`http://localhost:3000/api/screenshot?link=${encodeURIComponent(link)}`)
+      .then(res => res.text())
+      .then(data => console.log('GET Response:', data))
+      .catch(err => console.error('GET Error:', err));
+
   } else {
     console.log('Not a product page — no Add to Cart button found.');
   }
 }, 2000);
-
-console.log("END");
