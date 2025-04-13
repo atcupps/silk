@@ -1,10 +1,10 @@
 import Navbar from '../components/ui/Navbar';
 import { Box, Typography } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { countryNameToCode } from '../assets/CountryNameToCode';
 import { Ticket, Item, UserMode } from '../types/interfaces';
 import { useParams } from 'react-router-dom';
@@ -64,7 +64,7 @@ const Create = (props: {
   return (
     <Box
       width="100%"
-      height="100vh"
+      minHeight="100vh"
       display="flex"
       flexDirection="column"
       overflow="hidden"
@@ -85,7 +85,7 @@ const Create = (props: {
           <Box display="flex" flexDirection="column" alignItems="flex-start" gap={4}>
             <h1 style={{ color: colors.green1 }}>Create Listing</h1>
 
-            <Card.Root flexDirection="row" maxW="1200px"  overflow="hidden" variant="subtle" border="none" shadow="none">
+            <Card.Root flexDirection="row" maxW="1200px" overflow="hidden" variant="subtle" border="none" shadow="none" style={{ flexGrow: 1 }}>
               <Image
                 src={item.image_link}
                 onError={(e) => {
